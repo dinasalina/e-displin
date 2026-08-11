@@ -53,6 +53,45 @@ test('guru can report a new discipline case', function () {
     ]);
 });
 
+test('guru disiplin can update status and record tindakan disiplin', function () {
+    $sekolah = Sekolah::first();
+    $murid = Murid::create([
+        'uuid' => (string) Str::uuid(),
+        'sekolah_id' => $sekolah->id,
+        'nama_penuh' => 'Ahmad Faiz',
+        'no_kp' => '120202105555',
+        'tarikh_lahir' => '2012-02-02',
+        'jantina' => 'LELAKI',
+        'status_murid' => 'AKTIF',
+    ]);
+    $kategori = KategoriDisiplin::first();
+    $pelapor = User::factory()->create(['sekolah_id' => $sekolah->id]);
+
+    $laporAction = app(LaporKesAction::class);
+    $rekod = $laporAction->execute($pelapor, [
+        'sekolah_id' => $sekolah->id,
+        'murid_id' => $murid->id,
+        'kategori_disiplin_id' => $kategori->id,
+        'tarikh_kejadian' => now()->format('Y-m-d H:i:s'),
+        'keterangan_kes' => 'Ujian kes amaran',
+    ]);
+
+    $guruDisiplin = User::factory()->create(['sekolah_id' => $sekolah->id]);
+    $guruDisiplin->givePermissionTo('disiplin.semak');
+
+    $response = $this->actingAs($guruDisiplin)->post(route('disiplin.tindakan.update', $rekod), [
+        'status_kes' => 'DALAM_TINDAKAN',
+        'jenis_tindakan' => 'Amaran Lisan Kali Pertama',
+        'keterangan_tindakan' => 'Sesi kaunseling & amaran lisan diberikan.',
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('tindakan_disiplin', [
+        'rekod_disiplin_id' => $rekod->id,
+        'jenis_tindakan' => 'Amaran Lisan Kali Pertama',
+    ]);
+});
+
 test('sequential approval flow for heavy discipline case', function () {
     $sekolah = Sekolah::first();
     $murid = Murid::create([
