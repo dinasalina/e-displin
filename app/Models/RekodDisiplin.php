@@ -77,7 +77,17 @@ class RekodDisiplin extends Model
         return $this->hasMany(EskalasiKes::class, 'rekod_disiplin_id');
     }
 
+    public function eskalasi(): HasMany
+    {
+        return $this->hasMany(EskalasiKes::class, 'rekod_disiplin_id');
+    }
+
     public function tindakanDisiplin(): HasMany
+    {
+        return $this->hasMany(TindakanDisiplin::class, 'rekod_disiplin_id');
+    }
+
+    public function tindakan(): HasMany
     {
         return $this->hasMany(TindakanDisiplin::class, 'rekod_disiplin_id');
     }
@@ -87,7 +97,17 @@ class RekodDisiplin extends Model
         return $this->hasMany(LampiranDisiplin::class, 'rekod_disiplin_id');
     }
 
+    public function lampiran(): HasMany
+    {
+        return $this->hasMany(LampiranDisiplin::class, 'rekod_disiplin_id');
+    }
+
     public function sejarahStatusKes(): HasMany
+    {
+        return $this->hasMany(SejarahStatusKes::class, 'rekod_disiplin_id');
+    }
+
+    public function sejarahStatus(): HasMany
     {
         return $this->hasMany(SejarahStatusKes::class, 'rekod_disiplin_id');
     }

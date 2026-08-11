@@ -19,6 +19,7 @@ class SejarahStatusKes extends Model
         'dikemaskini_oleh_id',
         'status_asal',
         'status_baharu',
+        'catatan',
         'nota_perubahan',
         'created_at',
     ];
@@ -28,6 +29,16 @@ class SejarahStatusKes extends Model
         return [
             'created_at' => 'datetime',
         ];
+    }
+
+    public function getCatatanAttribute(): ?string
+    {
+        return $this->attributes['nota_perubahan'] ?? null;
+    }
+
+    public function setCatatanAttribute(?string $value): void
+    {
+        $this->attributes['nota_perubahan'] = $value;
     }
 
     public function rekodDisiplin(): BelongsTo
