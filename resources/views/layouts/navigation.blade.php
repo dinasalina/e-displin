@@ -1,164 +1,137 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-xl font-bold text-indigo-600">
-                        e-Disiplin
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-6 sm:-my-px sm:ms-10 sm:flex items-center">
-                    <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                        {{ __('Dashboard') }}
-                    </a>
-
-                    @can('disiplin.lapor')
-                    <a href="{{ route('disiplin.lapor.create') }}" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-bold hover:bg-red-700 transition">
-                        + Lapor Kes
-                    </a>
-                    @endcan
-
-                    @canany(['disiplin.lihat.sekolah', 'disiplin.lihat.kelas', 'disiplin.lihat.sendiri'])
-                    <a href="{{ route('disiplin.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('disiplin.index', 'disiplin.show') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                        Senarai Kes Disiplin
-                    </a>
-                    @endcanany
-
-                    @canany(['disiplin.eskalasi.pkhem', 'disiplin.eskalasi.pengetua', 'disiplin.semak'])
-                    <a href="{{ route('disiplin.eskalasi.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('disiplin.eskalasi.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
-                        Kelulusan Kes Berat
-                    </a>
-                    @endcanany
-
-                    @canany(['sekolah.urus', 'pengguna.urus', 'kelas.urus', 'murid.urus', 'penjaga.urus'])
-                    <!-- Master Data Dropdown -->
-                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                        <button @click="open = ! open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <span>Master Data</span>
-                            <svg class="ms-1 fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-
-                        <div x-show="open" x-transition class="absolute left-0 z-50 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" style="display: none;">
-                            @can('sekolah.urus')
-                            <a href="{{ route('master.sekolah.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sekolah</a>
-                            <a href="{{ route('master.tahun-akademik.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Tahun Akademik</a>
-                            @endcan
-                            @can('pengguna.urus')
-                            <a href="{{ route('master.pengguna.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengguna & Peranan</a>
-                            @endcan
-                            @can('kelas.urus')
-                            <a href="{{ route('master.kelas.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kelas & Guru Kelas</a>
-                            @endcan
-                            @can('murid.urus')
-                            <a href="{{ route('master.murid.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Murid</a>
-                            @endcan
-                            @can('penjaga.urus')
-                            <a href="{{ route('master.penjaga.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Penjaga</a>
-                            @endcan
-                            @can('sekolah.urus')
-                            <a href="{{ route('master.kategori-disiplin.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kategori Disiplin</a>
-                            @endcan
-                        </div>
-                    </div>
-                    @endcanany
-                </div>
+<aside :class="sidebarOpen ? 'w-64' : 'w-20'" 
+       class="fixed inset-y-0 left-0 z-50 flex flex-col bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700/60 transition-all duration-300 transform lg:translate-x-0 lg:static"
+       :class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    
+    <!-- BRAND LOGO -->
+    <div class="flex items-center justify-between h-16 px-4 border-b border-slate-100 dark:border-slate-700/60">
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 overflow-hidden">
+            <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20 shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
             </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-                    <div @click="open = ! open">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div x-show="open"
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 scale-95"
-                         x-transition:enter-end="opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-75"
-                         x-transition:leave-start="opacity-100 scale-100"
-                         x-transition:leave-end="opacity-0 scale-95"
-                         class="absolute right-0 z-50 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                         style="display: none;"
-                         @click="open = false">
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                            {{ __('Profile') }}
-                        </a>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); this.closest('form').submit();"
-                               class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                {{ __('Log Out') }}
-                            </a>
-                        </form>
-                    </div>
-                </div>
+            <div class="flex flex-col whitespace-nowrap" x-show="sidebarOpen" x-transition>
+                <span class="font-bold text-lg font-heading text-slate-900 dark:text-white">e-Disiplin</span>
+                <span class="text-[10px] font-semibold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase">Sistem Pengurusan Disiplin</span>
             </div>
+        </a>
+        <button @click="sidebarOpen = !sidebarOpen" class="hidden lg:flex p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+            <svg class="w-5 h-5 transition-transform duration-200" :class="{ 'rotate-180': !sidebarOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+            </svg>
+        </button>
+    </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+    <!-- MENU LINKS -->
+    <div class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+        
+        <div class="px-3 mb-2" x-show="sidebarOpen">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Modul Utama</span>
+        </div>
+
+        <!-- Dashboard -->
+        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-semibold text-xs sm:text-sm {{ request()->routeIs('dashboard') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/60' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100' }} transition-colors">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            <span x-show="sidebarOpen" class="truncate">Dashboard Utama</span>
+        </a>
+
+        @can('disiplin.lapor')
+        <!-- Borang Laporan Kes -->
+        <a href="{{ route('disiplin.lapor.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-xs sm:text-sm {{ request()->routeIs('disiplin.lapor.*') ? 'bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/60' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100' }} transition-colors">
+            <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span x-show="sidebarOpen" class="truncate font-bold text-red-600 dark:text-red-400">+ Lapor Kes Baharu</span>
+        </a>
+        @endcan
+
+        @canany(['disiplin.lihat.sekolah', 'disiplin.lihat.kelas', 'disiplin.lihat.sendiri'])
+        <!-- Rekod Kes Disiplin -->
+        <a href="{{ route('disiplin.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-xs sm:text-sm {{ request()->routeIs('disiplin.index', 'disiplin.show') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/60' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100' }} transition-colors">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span x-show="sidebarOpen" class="truncate">Senarai Kes Disiplin</span>
+        </a>
+        @endcanany
+
+        @canany(['disiplin.eskalasi.pkhem', 'disiplin.eskalasi.pengetua', 'disiplin.semak'])
+        <!-- Kelulusan Kes Berat -->
+        <a href="{{ route('disiplin.eskalasi.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-xs sm:text-sm {{ request()->routeIs('disiplin.eskalasi.*') ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/60' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100' }} transition-colors">
+            <svg class="w-5 h-5 shrink-0 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span x-show="sidebarOpen" class="truncate">Kelulusan Kes Berat</span>
+        </a>
+        @endcanany
+
+        @canany(['sekolah.urus', 'pengguna.urus', 'kelas.urus', 'murid.urus', 'penjaga.urus'])
+        <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700/60" x-show="sidebarOpen">
+            <span class="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Master Data</span>
+        </div>
+
+        @can('sekolah.urus')
+        <a href="{{ route('master.sekolah.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.sekolah.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>🏫</span>
+            <span x-show="sidebarOpen" class="truncate">Sekolah</span>
+        </a>
+        <a href="{{ route('master.tahun-akademik.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.tahun-akademik.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>📅</span>
+            <span x-show="sidebarOpen" class="truncate">Tahun Akademik</span>
+        </a>
+        @endcan
+
+        @can('pengguna.urus')
+        <a href="{{ route('master.pengguna.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.pengguna.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>👥</span>
+            <span x-show="sidebarOpen" class="truncate">Pengguna & Peranan</span>
+        </a>
+        @endcan
+
+        @can('kelas.urus')
+        <a href="{{ route('master.kelas.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.kelas.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>🏫</span>
+            <span x-show="sidebarOpen" class="truncate">Kelas & Guru Kelas</span>
+        </a>
+        @endcan
+
+        @can('murid.urus')
+        <a href="{{ route('master.murid.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.murid.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>👧</span>
+            <span x-show="sidebarOpen" class="truncate">Murid</span>
+        </a>
+        @endcan
+
+        @can('penjaga.urus')
+        <a href="{{ route('master.penjaga.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.penjaga.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>👨‍👩‍👧</span>
+            <span x-show="sidebarOpen" class="truncate">Penjaga</span>
+        </a>
+        @endcan
+
+        @can('sekolah.urus')
+        <a href="{{ route('master.kategori-disiplin.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs sm:text-sm {{ request()->routeIs('master.kategori-disiplin.*') ? 'text-indigo-600 font-bold bg-indigo-50/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50' }}">
+            <span>⚠️</span>
+            <span x-show="sidebarOpen" class="truncate">Kategori Disiplin</span>
+        </a>
+        @endcan
+        @endcanany
+
+    </div>
+
+    <!-- USER CARD FOOTER -->
+    <div class="p-3 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/50">
+        <div class="flex items-center gap-3 p-2 rounded-xl bg-white dark:bg-slate-700/50 border border-slate-200/60 dark:border-slate-600/50 shadow-sm">
+            <div class="w-9 h-9 rounded-lg bg-indigo-600 text-white font-extrabold text-sm flex items-center justify-center shrink-0">
+                {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
+            </div>
+            <div class="flex flex-col min-w-0 flex-1" x-show="sidebarOpen">
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ Auth::user()->name }}</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 truncate">{{ Auth::user()->jawatan ?? 'Pengguna Sistem' }}</span>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <a href="{{ route('dashboard') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50' }}">
-                {{ __('Dashboard') }}
-            </a>
-            @can('disiplin.lapor')
-            <a href="{{ route('disiplin.lapor.create') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-bold text-red-600 hover:bg-gray-50">+ Lapor Kes Disiplin</a>
-            @endcan
-            <a href="{{ route('disiplin.index') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-medium text-gray-600 hover:bg-gray-50">Senarai Kes Disiplin</a>
-            <a href="{{ route('disiplin.eskalasi.index') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-medium text-gray-600 hover:bg-gray-50">Kelulusan Kes Berat</a>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <a href="{{ route('profile.edit') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out">
-                    {{ __('Profile') }}
-                </a>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <a href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); this.closest('form').submit();"
-                       class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition duration-150 ease-in-out">
-                        {{ __('Log Out') }}
-                    </a>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+</aside>

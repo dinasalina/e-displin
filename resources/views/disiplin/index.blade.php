@@ -1,33 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Senarai Kes Disiplin</h2>
-            <p class="text-sm text-gray-600">Pengurusan dan semakan rekod laporan disiplin murid sekolah.</p>
+            <div class="flex items-center gap-2 text-xs text-slate-400 mb-1">
+                <span>Modul Disiplin</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold">Rekod Kes Disiplin</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">Senarai Kes Disiplin</h1>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Pengurusan dan semakan rekod laporan disiplin murid sekolah.</p>
         </div>
+
         @can('disiplin.lapor')
-        <a href="{{ route('disiplin.lapor.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-bold text-sm rounded-md hover:bg-red-700 shadow-sm">
-            + Lapor Kes Baharu
+        <a href="{{ route('disiplin.lapor.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-rose-600/20 transition-all hover:scale-[1.02]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>+ Lapor Kes Baharu</span>
         </a>
         @endcan
     </div>
 
     @if(session('success'))
-        <div class="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-700">
+        <div class="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-2xl text-sm font-semibold">
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Penapis & Carian -->
-    <div class="bg-white p-4 rounded-lg shadow border border-gray-100 mb-6">
+    <!-- Penapis & Carian Card -->
+    <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm">
         <form method="GET" action="{{ route('disiplin.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No Kes / Nama / No KP Murid..." class="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No Kes / Nama / No KP..." class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <select name="tahap" class="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <select name="tahap" class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">
                     <option value="">-- Semua Tahap Kes --</option>
                     @foreach($tahapOptions as $tahap)
                         <option value="{{ $tahap->value }}" {{ request('tahap') == $tahap->value ? 'selected' : '' }}>{{ $tahap->name }}</option>
@@ -35,7 +42,7 @@
                 </select>
             </div>
             <div>
-                <select name="status" class="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <select name="status" class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-xl text-xs text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none">
                     <option value="">-- Semua Status --</option>
                     @foreach($statusOptions as $status)
                         <option value="{{ $status->value }}" {{ request('status') == $status->value ? 'selected' : '' }}>{{ $status->name }}</option>
@@ -43,85 +50,86 @@
                 </select>
             </div>
             <div class="flex space-x-2">
-                <button type="submit" class="flex-1 bg-indigo-600 text-white font-semibold text-sm rounded-md hover:bg-indigo-700 py-2">Tapis</button>
-                <a href="{{ route('disiplin.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-semibold hover:bg-gray-200">Reset</a>
+                <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl py-2 shadow-sm transition">Tapis</button>
+                <a href="{{ route('disiplin.index') }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold hover:bg-slate-200 transition">Reset</a>
             </div>
         </form>
     </div>
 
-    <!-- Jadual Kes -->
-    <div class="bg-white rounded-lg shadow border border-gray-100 overflow-hidden">
+    <!-- Jadual Kes Modern -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500">No Kes & Tarikh</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500">Murid Involved</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500">Kategori & Tahap</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500">Status Kes</th>
-                        <th class="px-4 py-3 text-left font-medium text-gray-500">Pelapor</th>
-                        <th class="px-4 py-3 text-right font-medium text-gray-500">Tindakan</th>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        <th class="p-4">No Kes & Tarikh</th>
+                        <th class="p-4">Murid Involved</th>
+                        <th class="p-4">Kategori & Tahap</th>
+                        <th class="p-4">Status Kes</th>
+                        <th class="p-4">Pelapor</th>
+                        <th class="p-4 text-right">Tindakan</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs sm:text-sm">
                     @forelse($rekodList as $rekod)
-                        <tr class="{{ $rekod->is_void ? 'bg-red-50/50' : '' }}">
-                            <td class="px-4 py-3">
-                                <div class="font-bold font-mono {{ $rekod->is_void ? 'line-through text-gray-400' : 'text-indigo-600' }}">{{ $rekod->no_kes }}</div>
-                                <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($rekod->tarikh_kejadian)->format('d/m/Y h:i A') }}</div>
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors {{ $rekod->is_void ? 'bg-rose-50/20 dark:bg-rose-950/10' : '' }}">
+                            <td class="p-4">
+                                <div class="font-bold font-mono {{ $rekod->is_void ? 'line-through text-slate-400' : 'text-indigo-600 dark:text-indigo-400' }}">{{ $rekod->no_kes }}</div>
+                                <div class="text-[11px] text-slate-400">{{ \Carbon\Carbon::parse($rekod->tarikh_kejadian)->format('d/m/Y h:i A') }}</div>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="font-bold text-gray-900">{{ $rekod->murid->nama_penuh ?? '-' }}</div>
-                                <div class="text-xs text-gray-500">KP: {{ $rekod->murid->no_kp ?? '-' }}</div>
+                            <td class="p-4">
+                                <div class="font-bold text-slate-900 dark:text-white">{{ $rekod->murid->nama_penuh ?? '-' }}</div>
+                                <div class="text-[11px] text-slate-400">KP: {{ $rekod->murid->no_kp ?? '-' }}</div>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="font-semibold text-gray-800">{{ $rekod->kategoriDisiplin->nama_kategori ?? '-' }}</div>
+                            <td class="p-4">
+                                <div class="font-semibold text-slate-800 dark:text-slate-200">{{ $rekod->kategoriDisiplin->nama_kategori ?? '-' }}</div>
                                 @php
                                     $tVal = $rekod->tahap_kes->value ?? $rekod->tahap_kes;
                                     $tColor = match($tVal) {
-                                        'BERAT' => 'bg-red-100 text-red-800',
-                                        'SEDERHANA' => 'bg-yellow-100 text-yellow-800',
-                                        default => 'bg-blue-100 text-blue-800',
+                                        'BERAT' => 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300',
+                                        'SEDERHANA' => 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+                                        default => 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300',
                                     };
                                 @endphp
-                                <span class="px-2 py-0.5 text-xs rounded font-bold {{ $tColor }}">{{ $tVal }}</span>
+                                <span class="px-2 py-0.5 text-[10px] rounded-full font-extrabold {{ $tColor }}">{{ $tVal }}</span>
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="p-4">
                                 @if($rekod->is_void)
-                                    <span class="px-2.5 py-1 text-xs rounded-full font-bold bg-gray-200 text-gray-700">VOID (BATAL)</span>
+                                    <span class="px-2.5 py-1 text-[11px] rounded-full font-bold bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300">VOID (BATAL)</span>
                                 @else
                                     @php
                                         $sVal = $rekod->status_kes->value ?? $rekod->status_kes;
                                         $sColor = match($sVal) {
-                                            'DILAPORKAN' => 'bg-blue-100 text-blue-800',
-                                            'DALAM_SEMAKAN' => 'bg-yellow-100 text-yellow-800',
-                                            'MENUNGGU_KELULUSAN' => 'bg-purple-100 text-purple-800 font-bold animate-pulse',
-                                            'DALAM_TINDAKAN' => 'bg-orange-100 text-orange-800',
-                                            'DITUTUP' => 'bg-green-100 text-green-800',
-                                            default => 'bg-gray-100 text-gray-800',
+                                            'DILAPORKAN' => 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300',
+                                            'DALAM_SEMAKAN' => 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+                                            'MENUNGGU_KELULUSAN' => 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 animate-pulse',
+                                            'DALAM_TINDAKAN' => 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300',
+                                            'DITUTUP' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+                                            default => 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
                                         };
                                     @endphp
-                                    <span class="px-2.5 py-1 text-xs rounded-full font-bold {{ $sColor }}">{{ $sVal }}</span>
+                                    <span class="px-2.5 py-1 text-[11px] rounded-full font-extrabold {{ $sColor }}">{{ $sVal }}</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-xs text-gray-600">
+                            <td class="p-4 text-xs text-slate-500 dark:text-slate-400">
                                 {{ $rekod->pelapor->nama ?? '-' }}
                             </td>
-                            <td class="px-4 py-3 text-right">
-                                <a href="{{ route('disiplin.show', $rekod) }}" class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded text-xs font-semibold">
-                                    Butiran Kes ➔
+                            <td class="p-4 text-right">
+                                <a href="{{ route('disiplin.show', $rekod) }}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-xl text-xs font-bold transition">
+                                    <span>Butiran Kes</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">Tiada rekod kes disiplin dijumpai.</td>
+                            <td colspan="6" class="p-8 text-center text-slate-400">Tiada rekod kes disiplin dijumpai.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        <div class="p-4 border-t border-gray-100">
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700/60">
             {{ $rekodList->links() }}
         </div>
     </div>
