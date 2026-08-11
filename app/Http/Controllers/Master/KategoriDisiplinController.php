@@ -15,6 +15,8 @@ class KategoriDisiplinController extends Controller
 {
     public function index(): View
     {
+        $this->authorize('viewAny', Sekolah::class);
+
         $kategoriList = KategoriDisiplin::with('sekolah')->latest()->paginate(10);
         $sekolahList = Sekolah::all();
         $tahapOptions = TahapKesEnum::cases();
