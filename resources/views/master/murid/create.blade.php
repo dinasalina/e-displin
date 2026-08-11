@@ -1,0 +1,81 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="py-6 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Daftar Murid Baharu</h2>
+        <p class="text-sm text-gray-600">Pendaftaran maklumat murid dan penempatan kelas awal.</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow border border-gray-100">
+        <form action="{{ route('master.murid.store') }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Sekolah</label>
+                    <select name="sekolah_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @foreach($sekolahList as $s)
+                            <option value="{{ $s->id }}" {{ old('sekolah_id') == $s->id ? 'selected' : '' }}>{{ $s->nama_sekolah }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Penuh Murid</label>
+                    <input type="text" name="nama_penuh" value="{{ old('nama_penuh') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    @error('nama_penuh') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">No. Kad Pengenalan / MyKid</label>
+                    <input type="text" name="no_kp" value="{{ old('no_kp') }}" required placeholder="e.g. 140510101234" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    @error('no_kp') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">NISN / No. Matrik Sekolah</label>
+                    <input type="text" name="nisn_nis" value="{{ old('nisn_nis') }}" placeholder="NIS2025001" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Jantina</label>
+                    <select name="jantina" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        <option value="LELAKI">Lelaki</option>
+                        <option value="PEREMPUAN">Perempuan</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Tarikh Lahir</label>
+                    <input type="date" name="tarikh_lahir" value="{{ old('tarikh_lahir') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Status Murid</label>
+                    <select name="status_murid" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        @foreach($statusOptions as $status)
+                            <option value="{{ $status->value }}">{{ $status->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Penempatan Kelas Semasa</label>
+                    <select name="kelas_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        <option value="">-- Pilih Kelas --</option>
+                        @foreach($kelasList as $kelas)
+                            <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }} (Darjah {{ $kelas->tingkatan_darjah }})</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                <a href="{{ route('master.murid.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-semibold hover:bg-gray-200">Batal</a>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-semibold hover:bg-indigo-700">Simpan Murid</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
