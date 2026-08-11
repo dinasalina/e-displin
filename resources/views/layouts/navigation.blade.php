@@ -1,4 +1,4 @@
-<nav x-data="{ open: false, masterDropdown: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -15,6 +15,24 @@
                     <a href="{{ route('dashboard') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                         {{ __('Dashboard') }}
                     </a>
+
+                    @can('disiplin.lapor')
+                    <a href="{{ route('disiplin.lapor.create') }}" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-bold hover:bg-red-700 transition">
+                        + Lapor Kes
+                    </a>
+                    @endcan
+
+                    @canany(['disiplin.lihat.sekolah', 'disiplin.lihat.kelas', 'disiplin.lihat.sendiri'])
+                    <a href="{{ route('disiplin.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('disiplin.index', 'disiplin.show') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        Senarai Kes Disiplin
+                    </a>
+                    @endcanany
+
+                    @canany(['disiplin.eskalasi.pkhem', 'disiplin.eskalasi.pengetua', 'disiplin.semak'])
+                    <a href="{{ route('disiplin.eskalasi.index') }}" class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('disiplin.eskalasi.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        Kelulusan Kes Berat
+                    </a>
+                    @endcanany
 
                     @canany(['sekolah.urus', 'pengguna.urus', 'kelas.urus', 'murid.urus', 'penjaga.urus'])
                     <!-- Master Data Dropdown -->
@@ -112,22 +130,11 @@
             <a href="{{ route('dashboard') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50' }}">
                 {{ __('Dashboard') }}
             </a>
-            @can('sekolah.urus')
-            <a href="{{ route('master.sekolah.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Sekolah</a>
-            <a href="{{ route('master.tahun-akademik.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Tahun Akademik</a>
+            @can('disiplin.lapor')
+            <a href="{{ route('disiplin.lapor.create') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-bold text-red-600 hover:bg-gray-50">+ Lapor Kes Disiplin</a>
             @endcan
-            @can('pengguna.urus')
-            <a href="{{ route('master.pengguna.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Pengguna & Peranan</a>
-            @endcan
-            @can('kelas.urus')
-            <a href="{{ route('master.kelas.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Kelas & Guru Kelas</a>
-            @endcan
-            @can('murid.urus')
-            <a href="{{ route('master.murid.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Murid</a>
-            @endcan
-            @can('penjaga.urus')
-            <a href="{{ route('master.penjaga.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:bg-gray-50">Penjaga</a>
-            @endcan
+            <a href="{{ route('disiplin.index') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-medium text-gray-600 hover:bg-gray-50">Senarai Kes Disiplin</a>
+            <a href="{{ route('disiplin.eskalasi.index') }}" class="block w-full ps-3 pe-4 py-2 text-start text-base font-medium text-gray-600 hover:bg-gray-50">Kelulusan Kes Berat</a>
         </div>
 
         <!-- Responsive Settings Options -->

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Disiplin\EskalasiKesController;
+use App\Http\Controllers\Disiplin\LaporKesController;
+use App\Http\Controllers\Disiplin\RekodDisiplinController;
+use App\Http\Controllers\Disiplin\VoidKesController;
 use App\Http\Controllers\Master\KategoriDisiplinController;
 use App\Http\Controllers\Master\KelasController;
 use App\Http\Controllers\Master\KelasGuruController;
@@ -34,6 +38,21 @@ Route::middleware('auth')->group(function () {
         Route::resource('murid', MuridController::class);
         Route::resource('penjaga', PenjagaController::class)->except(['create', 'edit', 'show']);
         Route::resource('kategori-disiplin', KategoriDisiplinController::class)->except(['create', 'edit', 'show']);
+    });
+
+    // Modul 2: Pengurusan Kes Disiplin & Sequential Approval
+    Route::prefix('disiplin')->name('disiplin.')->group(function () {
+        Route::get('/lapor', [LaporKesController::class, 'create'])->name('lapor.create');
+        Route::post('/lapor', [LaporKesController::class, 'store'])->name('lapor.store');
+
+        Route::get('/', [RekodDisiplinController::class, 'index'])->name('index');
+        Route::get('/eskalasi', [EskalasiKesController::class, 'index'])->name('eskalasi.index');
+        Route::post('/eskalasi/{eskalasi}/proses', [EskalasiKesController::class, 'prosesEskalasi'])->name('eskalasi.proses');
+
+        Route::get('/{disiplin}', [RekodDisiplinController::class, 'show'])->name('show');
+        Route::post('/{disiplin}/tindakan', [RekodDisiplinController::class, 'updateStatusTindakan'])->name('tindakan.update');
+        Route::post('/{disiplin}/eskalasi-pkhem', [EskalasiKesController::class, 'hantarKePkhem'])->name('eskalasi.pkhem');
+        Route::post('/{disiplin}/void', [VoidKesController::class, 'store'])->name('void');
     });
 });
 
