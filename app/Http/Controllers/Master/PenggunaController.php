@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\UrusPenggunaRequest;
 use App\Models\Pengguna;
 use App\Models\Sekolah;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -44,7 +45,7 @@ class PenggunaController extends Controller
         $data['uuid'] = (string) Str::uuid();
         $data['password'] = Hash::make($data['password']);
 
-        $pengguna = Pengguna::create($data);
+        $pengguna = User::create($data);
         $pengguna->assignRole($roleName);
 
         return redirect()->route('master.pengguna.index')->with('success', 'Akaun pengguna berjaya didaftarkan.');

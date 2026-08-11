@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Pengguna;
 use App\Models\Sekolah;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -69,7 +69,7 @@ class DemoUserSeeder extends Seeder
             $roleName = $userData['role'];
             unset($userData['role']);
 
-            $pengguna = Pengguna::firstOrCreate(
+            $pengguna = User::firstOrCreate(
                 ['email' => $userData['email']],
                 array_merge($userData, [
                     'uuid' => (string) Str::uuid(),
